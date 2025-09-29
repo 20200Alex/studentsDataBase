@@ -68,6 +68,35 @@ void sortStudentsByGPAAsc(std::vector<Student>& database) {
         });
 }
 
+
+TEST(SortingTest, SortByGPAAscending) {
+    std::vector<Student> testDB = {
+        {"Ivan", 20, "CS", 4.5},
+        {"Anna", 19, "Math", 4.8},
+        {"Boris", 21, "Physics", 4.2}
+    };
+
+    sortStudentsByGPAAsc(testDB);
+
+    EXPECT_NEAR(testDB[0].gpa, 4.2, 1e-6);
+    EXPECT_NEAR(testDB[1].gpa, 4.5, 1e-6);
+    EXPECT_NEAR(testDB[2].gpa, 4.8, 1e-6);
+    EXPECT_EQ(testDB[0].name, "Boris");
+    EXPECT_EQ(testDB[1].name, "Ivan");
+    EXPECT_EQ(testDB[2].name, "Anna");
+}
+
+TEST(SortingTest, EmptyDatabase) {
+    std::vector<Student> emptyDB;
+
+    // Эти вызовы не должны вызывать ошибок
+    sortStudentsByName(emptyDB);
+    sortStudentsByGPA(emptyDB);
+    sortStudentsByGPAAsc(emptyDB);
+
+    EXPECT_TRUE(emptyDB.empty());
+}
+
 TEST(SortingTest, SameNamesDifferentGPA) {
     std::vector<Student> testDB = {
         {"Anna", 20, "CS", 4.5},
