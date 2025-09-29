@@ -68,6 +68,22 @@ void sortStudentsByGPAAsc(std::vector<Student>& database) {
         });
 }
 
+TEST(SortingTest, SortByGPADescending) {
+    std::vector<Student> testDB = {
+        {"Ivan", 20, "CS", 4.5},
+        {"Anna", 19, "Math", 4.8},
+        {"Boris", 21, "Physics", 4.2}
+    };
+
+    sortStudentsByGPA(testDB);
+
+    EXPECT_NEAR(testDB[0].gpa, 4.8, 1e-6);
+    EXPECT_NEAR(testDB[1].gpa, 4.5, 1e-6);
+    EXPECT_NEAR(testDB[2].gpa, 4.2, 1e-6);
+    EXPECT_EQ(testDB[0].name, "Anna");
+    EXPECT_EQ(testDB[1].name, "Ivan");
+    EXPECT_EQ(testDB[2].name, "Boris");
+}
 
 TEST(SortingTest, SortByGPAAscending) {
     std::vector<Student> testDB = {
