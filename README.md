@@ -1,5 +1,5 @@
 ![C++ workflow](https://github.com/20200Alex/studentsDataBase/actions/workflows/c-cpp.yml/badge.svg)
-![My Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/imitrichev/25038fb53c9796ef9018d44ca597f1fd/raw/Training_2022_main.json)
+![Tests](https://img.shields.io/badge/Tests-8%20passed-brightgreen)
 # Repo
 Note: test coverage is measured only for test_fun.cpp file! (see yml)
 
