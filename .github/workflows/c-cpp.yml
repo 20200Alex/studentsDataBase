@@ -14,24 +14,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Install GoogleTest
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential libgtest-dev cmake
+        sudo apt-get install -y build-essential cmake git
         
-    - name: Build GoogleTest manually
+    - name: Clone and build GoogleTest locally
       run: |
-        cd /usr/src/gtest
-        sudo mkdir -p build
+        # Клонируем и собираем GoogleTest в текущей директории
+        git clone https://github.com/google/googletest.git
+        cd googletest
+        mkdir build
         cd build
-        sudo cmake ..
-        sudo make
-        sudo make install
+        cmake ..
+        make -j4
         
-    - name: Compile program
+    - name: Compile with local GoogleTest
       run: |
-        g++ -std=c++20 -pthread -lgtest -lgtest_main main.cpp -o program.out
-        
-    - name: Run tests
-      run: |
+        # Компилируем с локальными библиотеками
+        g++ -std=c++20 -pthread -Igoogletest/googletest/include -Lgoogletest/build/lib main.cpp -lgtest -lgtest_main -o program.out
         ./program.out --test
