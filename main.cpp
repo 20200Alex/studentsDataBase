@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <cassert>
+#include "gtest/gtest.h"
 
 struct Student {
     std::string name;
@@ -27,6 +30,11 @@ void addStudent(std::vector<Student>& database) {
 
 // Функция для вывода всех студентов из базы данных
 void displayStudents(const std::vector<Student>& database) {
+    if (database.empty()) {
+        std::cout << "База данных пуста.\n";
+        return;
+    }
+    
     std::cout << "Список студентов:\n";
     for (const Student& student : database) {
         std::cout << "Имя: " << student.name << "\n";
@@ -36,14 +44,49 @@ void displayStudents(const std::vector<Student>& database) {
     }
 }
 
-int main() {
+// Функция для сортировки студентов по имени (по возрастанию)
+void sortStudentsByName(std::vector<Student>& database) {
+    std::sort(database.begin(), database.end(), 
+        [](const Student& a, const Student& b) {
+            return a.name < b.name;
+        });
+}
+
+// Функция для сортировки студентов по среднему баллу (по убыванию)
+void sortStudentsByGPA(std::vector<Student>& database) {
+    std::sort(database.begin(), database.end(), 
+        [](const Student& a, const Student& b) {
+            return a.gpa > b.gpa;
+        });
+}
+
+// Функция для сортировки студентов по среднему баллу (по возрастанию)
+void sortStudentsByGPAAsc(std::vector<Student>& database) {
+    std::sort(database.begin(), database.end(), 
+        [](const Student& a, const Student& b) {
+            return a.gpa < b.gpa;
+        });
+}
+
+int main(int argc, char **argv) {
+    // Если переданы аргументы командной строки, запускаем тесты
+    /*if (argc > 1 && std::string(argv[1]) == "--test") {
+        ::testing::InitGoogleTest(&argc, argv);
+        return RUN_ALL_TESTS();
+    }
+    
+    // Иначе запускаем обычное меню программы*/
     std::vector<Student> database;
 
     int choice;
     do {
-        std::cout << "Меню:\n";
+        std::cout << "\nМеню:\n";
         std::cout << "1. Добавить студента\n";
         std::cout << "2. Вывести список студентов\n";
+        std::cout << "3. Сортировать студентов по имени\n";
+        std::cout << "4. Сортировать студентов по среднему баллу (по убыванию)\n";
+        std::cout << "5. Сортировать студентов по среднему баллу (по возрастанию)\n";
+        std::cout << "6. Запустить тесты\n";
         std::cout << "0. Выход\n";
         std::cout << "Выберите действие: ";
         std::cin >> choice;
@@ -54,6 +97,33 @@ int main() {
                 break;
             case 2:
                 displayStudents(database);
+                break;
+            case 3:
+                if (database.empty()) {
+                    std::cout << "База данных пуста. Нечего сортировать.\n";
+                } else {
+                    sortStudentsByName(database);
+                    std::cout << "Студенты отсортированы по имени.\n";
+                }
+                break;
+            case 4:
+                if (database.empty()) {
+                    std::cout << "База данных пуста. Нечего сортировать.\n";
+                } else {
+                    sortStudentsByGPA(database);
+                    std::cout << "Студенты отсортированы по среднему баллу (по убыванию).\n";
+                }
+                break;
+            case 5:
+                if (database.empty()) {
+                    std::cout << "База данных пуста. Нечего сортировать.\n";
+                } else {
+                    sortStudentsByGPAAsc(database);
+                    std::cout << "Студенты отсортированы по среднему баллу (по возрастанию).\n";
+                }
+                break;
+            case 6:
+                runTests();
                 break;
             case 0:
                 std::cout << "Выход из программы.\n";
