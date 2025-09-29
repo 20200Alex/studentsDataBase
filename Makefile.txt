@@ -1,4 +1,4 @@
 all:
-	g++ -std=c++20 student_database -o a.out
+	g++ -std=c++20 student_database.cpp -o a.out
 clean:
 	rm a.out
