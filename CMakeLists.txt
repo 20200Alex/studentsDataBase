@@ -7,7 +7,8 @@ set(CMAKE_CXX_STANDARD 11)
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9fdabf8a6d4c6ad7e9b4dac.zip
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG release-1.12.1
 )
 
 # Для Windows: предотвратить переопределение макросов min/max
@@ -23,8 +24,7 @@ add_executable(students_db main.cpp)
 
 # Тестовая программа
 add_executable(students_db_test main.cpp)
-target_link_libraries(students_db_test gtest_main)
+target_link_libraries(students_db_test gtest gtest_main)
 
-# Разрешить запуск тестов через CTest
 enable_testing()
 add_test(NAME StudentsDatabaseTests COMMAND students_db_test)
