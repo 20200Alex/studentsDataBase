@@ -68,6 +68,24 @@ void sortStudentsByGPAAsc(std::vector<Student>& database) {
         });
 }
 
+// Тесты с использованием Google Test
+TEST(SortingTest, SortByNameAscending) {
+    std::vector<Student> testDB = {
+        {"Ivan", 20, "CS", 4.5},
+        {"Anna", 19, "Math", 4.8},
+        {"Boris", 21, "Physics", 4.2}
+    };
+
+    sortStudentsByName(testDB);
+
+    EXPECT_EQ(testDB[0].name, "Anna");
+    EXPECT_EQ(testDB[1].name, "Boris");
+    EXPECT_EQ(testDB[2].name, "Ivan");
+    EXPECT_NEAR(testDB[0].gpa, 4.8, 1e-6);
+    EXPECT_NEAR(testDB[1].gpa, 4.2, 1e-6);
+    EXPECT_NEAR(testDB[2].gpa, 4.5, 1e-6);
+}
+
 TEST(SortingTest, SortByGPADescending) {
     std::vector<Student> testDB = {
         {"Ivan", 20, "CS", 4.5},
