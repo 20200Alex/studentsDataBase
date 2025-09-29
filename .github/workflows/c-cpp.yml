@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: C/C++ CI with Google Test
 
 on:
   push:
@@ -16,13 +16,11 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake libgtest-dev libgtest-main
-        
-    - name: Build and Test
-      run: |
-        g++ -std=c++11 -lgtest -lgtest_main -pthread -o students_db_test main.cpp
-        ./students_db_test --gtest_output=xml:test_results.xml
+        sudo apt-get install -y build-essential cmake libgtest-dev googletest
       
-    - name: Show test results
+    - name: Compile and run tests
       run: |
-        echo "Тесты завершены. Проверьте вывод выше."
+        # Компилируем с Google Test
+        g++ -std=c++11 -I/usr/include/gtest -L/usr/lib/x86_64-linux-gnu -lgtest -lgtest_main -pthread main.cpp -o test_program
+        # Запускаем тесты
+        ./test_program --gtest_brief=1
