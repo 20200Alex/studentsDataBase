@@ -2,10 +2,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <cmath>
-#include "gtest/gtest.h"
-
-using namespace std;
+#include <gtest/gtest.h>
 
 struct Student {
     std::string name;
@@ -32,11 +29,6 @@ void addStudent(std::vector<Student>& database) {
 
 // Функция для вывода всех студентов из базы данных
 void displayStudents(const std::vector<Student>& database) {
-    if (database.empty()) {
-        std::cout << "База данных пуста.\n";
-        return;
-    }
-    
     std::cout << "Список студентов:\n";
     for (const Student& student : database) {
         std::cout << "Имя: " << student.name << "\n";
@@ -46,144 +38,192 @@ void displayStudents(const std::vector<Student>& database) {
     }
 }
 
-// Функция для сортировки студентов по имени (по возрастанию)
-void sortStudentsByName(std::vector<Student>& database) {
-    std::sort(database.begin(), database.end(), 
-        [](const Student& a, const Student& b) {
-            return a.name < b.name;
-        });
+// Функции сравнения для сортировки
+bool compareByName(const Student& a, const Student& b) {
+    return a.name < b.name;
 }
 
-// Функция для сортировки студентов по среднему баллу (по убыванию)
-void sortStudentsByGPA(std::vector<Student>& database) {
-    std::sort(database.begin(), database.end(), 
-        [](const Student& a, const Student& b) {
-            return a.gpa > b.gpa;
-        });
+bool compareByGPA(const Student& a, const Student& b) {
+    return a.gpa > b.gpa; // по убыванию (высокий GPA первый)
 }
 
-// Функция для сортировки студентов по среднему баллу (по возрастанию)
-void sortStudentsByGPAAsc(std::vector<Student>& database) {
-    std::sort(database.begin(), database.end(), 
-        [](const Student& a, const Student& b) {
-            return a.gpa < b.gpa;
-        });
+bool compareByGPAAscending(const Student& a, const Student& b) {
+    return a.gpa < b.gpa; // по возрастанию
 }
 
-// Вспомогательные функции для тестирования
-vector<Student> createTestDatabase() {
-    return {
-        {"Ivan", 20, "CS", 4.5},
-        {"Anna", 19, "Math", 4.8},
-        {"Boris", 21, "Physics", 4.2}
-    };
-}
-
-// Тестирование сортировки по имени
-TEST(SortingTest, test_sort_by_name) {
-    vector<Student> db = createTestDatabase();
-    sortStudentsByName(db);
-    
-    EXPECT_EQ(db[0].name, "Anna");
-    EXPECT_EQ(db[1].name, "Boris");
-    EXPECT_EQ(db[2].name, "Ivan");
-    EXPECT_NEAR(db[0].gpa, 4.8, 1e-6);
-    EXPECT_NEAR(db[1].gpa, 4.2, 1e-6);
-    EXPECT_NEAR(db[2].gpa, 4.5, 1e-6);
-}
-
-// Тестирование сортировки по GPA (убывание)
-TEST(SortingTest, test_sort_by_gpa_desc) {
-    vector<Student> db = createTestDatabase();
-    sortStudentsByGPA(db);
-    
-    EXPECT_NEAR(db[0].gpa, 4.8, 1e-6);
-    EXPECT_NEAR(db[1].gpa, 4.5, 1e-6);
-    EXPECT_NEAR(db[2].gpa, 4.2, 1e-6);
-    EXPECT_EQ(db[0].name, "Anna");
-    EXPECT_EQ(db[1].name, "Ivan");
-    EXPECT_EQ(db[2].name, "Boris");
-}
-
-// Тестирование сортировки по GPA (возрастание)
-TEST(SortingTest, test_sort_by_gpa_asc) {
-    vector<Student> db = createTestDatabase();
-    sortStudentsByGPAAsc(db);
-    
-    EXPECT_NEAR(db[0].gpa, 4.2, 1e-6);
-    EXPECT_NEAR(db[1].gpa, 4.5, 1e-6);
-    EXPECT_NEAR(db[2].gpa, 4.8, 1e-6);
-    EXPECT_EQ(db[0].name, "Boris");
-    EXPECT_EQ(db[1].name, "Ivan");
-    EXPECT_EQ(db[2].name, "Anna");
-}
-
-// Тестирование пустой базы данных
-TEST(SortingTest, test_empty_database) {
-    vector<Student> emptyDB;
-    
-    // Эти вызовы не должны вызывать ошибок
-    sortStudentsByName(emptyDB);
-    sortStudentsByGPA(emptyDB);
-    sortStudentsByGPAAsc(emptyDB);
-    
-    EXPECT_TRUE(emptyDB.empty());
-}
-
-// Тестирование одинаковых имен
-TEST(SortingTest, test_same_names) {
-    vector<Student> db = {
-        {"Anna", 20, "CS", 4.5},
-        {"Anna", 19, "Math", 4.8},
-        {"Boris", 21, "Physics", 4.2}
-    };
-    
-    sortStudentsByName(db);
-    
-    EXPECT_EQ(db[0].name, "Anna");
-    EXPECT_EQ(db[1].name, "Anna");
-    EXPECT_EQ(db[2].name, "Boris");
-    EXPECT_NEAR(db[0].gpa, 4.5, 1e-6);  // Первая Anna
-    EXPECT_NEAR(db[1].gpa, 4.8, 1e-6);  // Вторая Anna
-    EXPECT_NEAR(db[2].gpa, 4.2, 1e-6);  // Boris
-}
-
-// Функция для запуска тестов (для меню программы)
-void runTests() {
-    std::cout << "Запуск тестов Google Test...\n";
-    
-    int argc = 1;
-    char* argv[] = {(char*)"students_db", nullptr};
-    
-    ::testing::InitGoogleTest(&argc, argv);
-    int result = RUN_ALL_TESTS();
-    
-    if (result == 0) {
-        std::cout << "Все тесты успешно пройдены!\n";
-    } else {
-        std::cout << "Некоторые тесты не пройдены!\n";
+// Функция для сортировки студентов
+void sortStudents(std::vector<Student>& database, int sortBy) {
+    switch (sortBy) {
+        case 1: // по имени
+            std::sort(database.begin(), database.end(), compareByName);
+            std::cout << "Студенты отсортированы по имени.\n";
+            break;
+        case 2: // по GPA (по убыванию)
+            std::sort(database.begin(), database.end(), compareByGPA);
+            std::cout << "Студенты отсортированы по среднему баллу (по убыванию).\n";
+            break;
+        case 3: // по GPA (по возрастанию)
+            std::sort(database.begin(), database.end(), compareByGPAAscending);
+            std::cout << "Студенты отсортированы по среднему баллу (по возрастанию).\n";
+            break;
+        default:
+            std::cout << "Неверный выбор сортировки.\n";
     }
 }
 
+// ==================== GOOGLE TESTS ====================
+
+TEST(StudentDatabaseTest, SortByName) {
+    std::vector<Student> database = {
+        {"Ivan", 20, "CS", 3.5},
+        {"Anna", 21, "Math", 3.8},
+        {"Boris", 22, "Physics", 3.2}
+    };
+    
+    sortStudents(database, 1);
+    
+    EXPECT_EQ(database[0].name, "Anna");
+    EXPECT_EQ(database[1].name, "Boris");
+    EXPECT_EQ(database[2].name, "Ivan");
+    EXPECT_EQ(database[0].age, 21);
+    EXPECT_EQ(database[1].age, 22);
+    EXPECT_EQ(database[2].age, 20);
+}
+
+TEST(StudentDatabaseTest, SortByGPADescending) {
+    std::vector<Student> database = {
+        {"Ivan", 20, "CS", 3.5},
+        {"Anna", 21, "Math", 3.8},
+        {"Boris", 22, "Physics", 3.2},
+        {"Maria", 19, "Biology", 3.8} // Тест с одинаковым GPA
+    };
+    
+    sortStudents(database, 2);
+    
+    EXPECT_DOUBLE_EQ(database[0].gpa, 3.8);
+    EXPECT_DOUBLE_EQ(database[1].gpa, 3.8);
+    EXPECT_DOUBLE_EQ(database[2].gpa, 3.5);
+    EXPECT_DOUBLE_EQ(database[3].gpa, 3.2);
+}
+
+TEST(StudentDatabaseTest, SortByGPAAscending) {
+    std::vector<Student> database = {
+        {"Ivan", 20, "CS", 3.5},
+        {"Anna", 21, "Math", 3.8},
+        {"Boris", 22, "Physics", 3.2}
+    };
+    
+    sortStudents(database, 3);
+    
+    EXPECT_DOUBLE_EQ(database[0].gpa, 3.2);
+    EXPECT_DOUBLE_EQ(database[1].gpa, 3.5);
+    EXPECT_DOUBLE_EQ(database[2].gpa, 3.8);
+    EXPECT_EQ(database[0].name, "Boris");
+    EXPECT_EQ(database[1].name, "Ivan");
+    EXPECT_EQ(database[2].name, "Anna");
+}
+
+TEST(CompareFunctionsTest, CompareByName) {
+    Student a = {"Anna", 20, "CS", 3.5};
+    Student b = {"Boris", 21, "Math", 3.8};
+    Student c = {"Anna", 22, "Physics", 4.0}; // Тест с одинаковыми именами
+    
+    EXPECT_TRUE(compareByName(a, b));   // Anna < Boris
+    EXPECT_FALSE(compareByName(b, a));  // Boris > Anna
+    EXPECT_FALSE(compareByName(a, a));  // Anna == Anna
+    EXPECT_FALSE(compareByName(a, c));  // Anna == Anna (другой студент)
+}
+
+TEST(CompareFunctionsTest, CompareByGPA) {
+    Student a = {"Anna", 20, "CS", 3.5};
+    Student b = {"Boris", 21, "Math", 3.8};
+    Student c = {"Maria", 22, "Physics", 3.5}; // Тест с одинаковым GPA
+    
+    EXPECT_TRUE(compareByGPA(b, a));   // 3.8 > 3.5
+    EXPECT_FALSE(compareByGPA(a, b));  // 3.5 < 3.8
+    EXPECT_FALSE(compareByGPA(a, a));  // 3.5 == 3.5
+    EXPECT_FALSE(compareByGPA(a, c));  // 3.5 == 3.5
+}
+
+TEST(StudentDatabaseTest, EmptyDatabase) {
+    std::vector<Student> emptyDatabase;
+    
+    // Не должно вызывать ошибок
+    EXPECT_NO_THROW(sortStudents(emptyDatabase, 1));
+    EXPECT_NO_THROW(sortStudents(emptyDatabase, 2));
+    EXPECT_NO_THROW(sortStudents(emptyDatabase, 3));
+    EXPECT_TRUE(emptyDatabase.empty());
+}
+
+TEST(StudentDatabaseTest, SingleStudent) {
+    std::vector<Student> database = {{"Anna", 20, "CS", 3.5}};
+    
+    sortStudents(database, 1);
+    EXPECT_EQ(database.size(), 1);
+    EXPECT_EQ(database[0].name, "Anna");
+    
+    sortStudents(database, 2);
+    EXPECT_EQ(database[0].name, "Anna");
+    
+    sortStudents(database, 3);
+    EXPECT_EQ(database[0].name, "Anna");
+}
+
+TEST(StudentDatabaseTest, CaseSensitiveSort) {
+    std::vector<Student> database = {
+        {"ivan", 20, "CS", 3.5},
+        {"Anna", 21, "Math", 3.8},
+        {"boris", 22, "Physics", 3.2}
+    };
+    
+    sortStudents(database, 1);
+    
+    // Проверяем, что сортировка учитывает регистр (A < b < i)
+    EXPECT_EQ(database[0].name, "Anna");
+    EXPECT_EQ(database[1].name, "boris");
+    EXPECT_EQ(database[2].name, "ivan");
+}
+
+TEST(StudentDatabaseTest, InvalidSortOption) {
+    std::vector<Student> database = {
+        {"Ivan", 20, "CS", 3.5},
+        {"Anna", 21, "Math", 3.8}
+    };
+    
+    // Сохраняем исходный порядок
+    std::vector<Student> original = database;
+    
+    // Неверная опция сортировки
+    testing::internal::CaptureStdout();
+    sortStudents(database, 999);
+    std::string output = testing::internal::GetCapturedStdout();
+    
+    // База данных не должна измениться
+    EXPECT_EQ(database.size(), original.size());
+    EXPECT_EQ(database[0].name, original[0].name);
+    EXPECT_EQ(database[1].name, original[1].name);
+}
+
+// ==================== MAIN FUNCTION ====================
+
 int main(int argc, char **argv) {
-    // Если переданы аргументы командной строки, запускаем тесты
+    // Если передан аргумент --test, запускаем тесты
     if (argc > 1 && std::string(argv[1]) == "--test") {
-        ::testing::InitGoogleTest(&argc, argv);
+        std::cout << "Запуск Google Tests...\n";
+        testing::InitGoogleTest(&argc, argv);
         return RUN_ALL_TESTS();
     }
     
-    // Иначе запускаем обычное меню программы
+    // Обычный режим работы программы
     std::vector<Student> database;
 
     int choice;
     do {
-        std::cout << "\nМеню:\n";
+        std::cout << "Меню:\n";
         std::cout << "1. Добавить студента\n";
         std::cout << "2. Вывести список студентов\n";
-        std::cout << "3. Сортировать студентов по имени\n";
-        std::cout << "4. Сортировать студентов по среднему баллу (по убыванию)\n";
-        std::cout << "5. Сортировать студентов по среднему баллу (по возрастанию)\n";
-        std::cout << "6. Запустить тесты\n";
+        std::cout << "3. Отсортировать студентов\n";
+        std::cout << "4. Запустить тесты\n";
         std::cout << "0. Выход\n";
         std::cout << "Выберите действие: ";
         std::cin >> choice;
@@ -196,31 +236,21 @@ int main(int argc, char **argv) {
                 displayStudents(database);
                 break;
             case 3:
-                if (database.empty()) {
-                    std::cout << "База данных пуста. Нечего сортировать.\n";
+                if (!database.empty()) {
+                    std::cout << "Сортировка по:\n";
+                    std::cout << "1. Имени\n";
+                    std::cout << "2. Среднему баллу (по убыванию)\n";
+                    std::cout << "3. Среднему баллу (по возрастанию)\n";
+                    std::cout << "Выберите тип сортировки: ";
+                    int sortChoice;
+                    std::cin >> sortChoice;
+                    sortStudents(database, sortChoice);
                 } else {
-                    sortStudentsByName(database);
-                    std::cout << "Студенты отсортированы по имени.\n";
+                    std::cout << "База данных пуста. Нечего сортировать.\n";
                 }
                 break;
             case 4:
-                if (database.empty()) {
-                    std::cout << "База данных пуста. Нечего сортировать.\n";
-                } else {
-                    sortStudentsByGPA(database);
-                    std::cout << "Студенты отсортированы по среднему баллу (по убыванию).\n";
-                }
-                break;
-            case 5:
-                if (database.empty()) {
-                    std::cout << "База данных пуста. Нечего сортировать.\n";
-                } else {
-                    sortStudentsByGPAAsc(database);
-                    std::cout << "Студенты отсортированы по среднему баллу (по возрастанию).\n";
-                }
-                break;
-            case 6:
-                runTests();
+                std::cout << "Для запуска тестов перезапустите программу с аргументом --test\n";
                 break;
             case 0:
                 std::cout << "Выход из программы.\n";
