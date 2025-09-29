@@ -2,8 +2,10 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <cassert>
+#include <cmath>
 #include "gtest/gtest.h"
+
+using namespace std;
 
 struct Student {
     std::string name;
@@ -68,111 +70,109 @@ void sortStudentsByGPAAsc(std::vector<Student>& database) {
         });
 }
 
-// Тесты с использованием Google Test
-TEST(SortingTest, SortByNameAscending) {
-    std::vector<Student> testDB = {
+// Вспомогательные функции для тестирования
+vector<Student> createTestDatabase() {
+    return {
         {"Ivan", 20, "CS", 4.5},
         {"Anna", 19, "Math", 4.8},
         {"Boris", 21, "Physics", 4.2}
     };
-
-    sortStudentsByName(testDB);
-
-    EXPECT_EQ(testDB[0].name, "Anna");
-    EXPECT_EQ(testDB[1].name, "Boris");
-    EXPECT_EQ(testDB[2].name, "Ivan");
-    EXPECT_NEAR(testDB[0].gpa, 4.8, 1e-6);
-    EXPECT_NEAR(testDB[1].gpa, 4.2, 1e-6);
-    EXPECT_NEAR(testDB[2].gpa, 4.5, 1e-6);
 }
 
-TEST(SortingTest, SortByGPADescending) {
-    std::vector<Student> testDB = {
-        {"Ivan", 20, "CS", 4.5},
-        {"Anna", 19, "Math", 4.8},
-        {"Boris", 21, "Physics", 4.2}
-    };
-
-    sortStudentsByGPA(testDB);
-
-    EXPECT_NEAR(testDB[0].gpa, 4.8, 1e-6);
-    EXPECT_NEAR(testDB[1].gpa, 4.5, 1e-6);
-    EXPECT_NEAR(testDB[2].gpa, 4.2, 1e-6);
-    EXPECT_EQ(testDB[0].name, "Anna");
-    EXPECT_EQ(testDB[1].name, "Ivan");
-    EXPECT_EQ(testDB[2].name, "Boris");
+// Тестирование сортировки по имени
+TEST(SortingTest, test_sort_by_name) {
+    vector<Student> db = createTestDatabase();
+    sortStudentsByName(db);
+    
+    EXPECT_EQ(db[0].name, "Anna");
+    EXPECT_EQ(db[1].name, "Boris");
+    EXPECT_EQ(db[2].name, "Ivan");
+    EXPECT_NEAR(db[0].gpa, 4.8, 1e-6);
+    EXPECT_NEAR(db[1].gpa, 4.2, 1e-6);
+    EXPECT_NEAR(db[2].gpa, 4.5, 1e-6);
 }
 
-TEST(SortingTest, SortByGPAAscending) {
-    std::vector<Student> testDB = {
-        {"Ivan", 20, "CS", 4.5},
-        {"Anna", 19, "Math", 4.8},
-        {"Boris", 21, "Physics", 4.2}
-    };
-
-    sortStudentsByGPAAsc(testDB);
-
-    EXPECT_NEAR(testDB[0].gpa, 4.2, 1e-6);
-    EXPECT_NEAR(testDB[1].gpa, 4.5, 1e-6);
-    EXPECT_NEAR(testDB[2].gpa, 4.8, 1e-6);
-    EXPECT_EQ(testDB[0].name, "Boris");
-    EXPECT_EQ(testDB[1].name, "Ivan");
-    EXPECT_EQ(testDB[2].name, "Anna");
+// Тестирование сортировки по GPA (убывание)
+TEST(SortingTest, test_sort_by_gpa_desc) {
+    vector<Student> db = createTestDatabase();
+    sortStudentsByGPA(db);
+    
+    EXPECT_NEAR(db[0].gpa, 4.8, 1e-6);
+    EXPECT_NEAR(db[1].gpa, 4.5, 1e-6);
+    EXPECT_NEAR(db[2].gpa, 4.2, 1e-6);
+    EXPECT_EQ(db[0].name, "Anna");
+    EXPECT_EQ(db[1].name, "Ivan");
+    EXPECT_EQ(db[2].name, "Boris");
 }
 
-TEST(SortingTest, EmptyDatabase) {
-    std::vector<Student> emptyDB;
+// Тестирование сортировки по GPA (возрастание)
+TEST(SortingTest, test_sort_by_gpa_asc) {
+    vector<Student> db = createTestDatabase();
+    sortStudentsByGPAAsc(db);
+    
+    EXPECT_NEAR(db[0].gpa, 4.2, 1e-6);
+    EXPECT_NEAR(db[1].gpa, 4.5, 1e-6);
+    EXPECT_NEAR(db[2].gpa, 4.8, 1e-6);
+    EXPECT_EQ(db[0].name, "Boris");
+    EXPECT_EQ(db[1].name, "Ivan");
+    EXPECT_EQ(db[2].name, "Anna");
+}
 
+// Тестирование пустой базы данных
+TEST(SortingTest, test_empty_database) {
+    vector<Student> emptyDB;
+    
     // Эти вызовы не должны вызывать ошибок
     sortStudentsByName(emptyDB);
     sortStudentsByGPA(emptyDB);
     sortStudentsByGPAAsc(emptyDB);
-
+    
     EXPECT_TRUE(emptyDB.empty());
 }
 
-TEST(SortingTest, SameNamesDifferentGPA) {
-    std::vector<Student> testDB = {
+// Тестирование одинаковых имен
+TEST(SortingTest, test_same_names) {
+    vector<Student> db = {
         {"Anna", 20, "CS", 4.5},
         {"Anna", 19, "Math", 4.8},
         {"Boris", 21, "Physics", 4.2}
     };
-
-    sortStudentsByName(testDB);
-
-    // Оба студента с именем Anna должны быть в начале
-    EXPECT_EQ(testDB[0].name, "Anna");
-    EXPECT_EQ(testDB[1].name, "Anna");
-    EXPECT_EQ(testDB[2].name, "Boris");
+    
+    sortStudentsByName(db);
+    
+    EXPECT_EQ(db[0].name, "Anna");
+    EXPECT_EQ(db[1].name, "Anna");
+    EXPECT_EQ(db[2].name, "Boris");
+    EXPECT_NEAR(db[0].gpa, 4.5, 1e-6);  // Первая Anna
+    EXPECT_NEAR(db[1].gpa, 4.8, 1e-6);  // Вторая Anna
+    EXPECT_NEAR(db[2].gpa, 4.2, 1e-6);  // Boris
 }
 
-// Функция для запуска тестов (будет использоваться в основном меню)
+// Функция для запуска тестов (для меню программы)
 void runTests() {
     std::cout << "Запуск тестов Google Test...\n";
-
-    // Создаем аргументы командной строки для Google Test
+    
     int argc = 1;
-    char* argv[] = { (char*)"students_db", nullptr };
-
+    char* argv[] = {(char*)"students_db", nullptr};
+    
     ::testing::InitGoogleTest(&argc, argv);
     int result = RUN_ALL_TESTS();
-
+    
     if (result == 0) {
         std::cout << "Все тесты успешно пройдены!\n";
-    }
-    else {
+    } else {
         std::cout << "Некоторые тесты не пройдены!\n";
     }
 }
 
 int main(int argc, char **argv) {
     // Если переданы аргументы командной строки, запускаем тесты
-    /*if (argc > 1 && std::string(argv[1]) == "--test") {
+    if (argc > 1 && std::string(argv[1]) == "--test") {
         ::testing::InitGoogleTest(&argc, argv);
         return RUN_ALL_TESTS();
     }
     
-    // Иначе запускаем обычное меню программы*/
+    // Иначе запускаем обычное меню программы
     std::vector<Student> database;
 
     int choice;
