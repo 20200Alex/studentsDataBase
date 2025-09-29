@@ -1,5 +1,5 @@
 all:
-	g++ -std=c++20 -pthread -I/usr/include/gtest -L/usr/lib/x86_64-linux-gnu main.cpp -o program.out -lgtest -lpthread
+	g++ -std=c++20 main.cpp -o a.out
 
 clean:
 	rm program.out
