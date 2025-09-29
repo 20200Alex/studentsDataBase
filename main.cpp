@@ -68,6 +68,40 @@ void sortStudentsByGPAAsc(std::vector<Student>& database) {
         });
 }
 
+TEST(SortingTest, SameNamesDifferentGPA) {
+    std::vector<Student> testDB = {
+        {"Anna", 20, "CS", 4.5},
+        {"Anna", 19, "Math", 4.8},
+        {"Boris", 21, "Physics", 4.2}
+    };
+
+    sortStudentsByName(testDB);
+
+    // Оба студента с именем Anna должны быть в начале
+    EXPECT_EQ(testDB[0].name, "Anna");
+    EXPECT_EQ(testDB[1].name, "Anna");
+    EXPECT_EQ(testDB[2].name, "Boris");
+}
+
+// Функция для запуска тестов (будет использоваться в основном меню)
+void runTests() {
+    std::cout << "Запуск тестов Google Test...\n";
+
+    // Создаем аргументы командной строки для Google Test
+    int argc = 1;
+    char* argv[] = { (char*)"students_db", nullptr };
+
+    ::testing::InitGoogleTest(&argc, argv);
+    int result = RUN_ALL_TESTS();
+
+    if (result == 0) {
+        std::cout << "Все тесты успешно пройдены!\n";
+    }
+    else {
+        std::cout << "Некоторые тесты не пройдены!\n";
+    }
+}
+
 int main(int argc, char **argv) {
     // Если переданы аргументы командной строки, запускаем тесты
     /*if (argc > 1 && std::string(argv[1]) == "--test") {
