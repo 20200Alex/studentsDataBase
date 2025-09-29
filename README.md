@@ -1,27 +1,7 @@
-# Student Database with Sorting
+![C++ workflow](https://github.com/imitrichev/Training_2022/actions/workflows/c-cpp.yml/badge.svg)
+![My Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/imitrichev/25038fb53c9796ef9018d44ca597f1fd/raw/Training_2022_main.json)
+# Repo
+Note: test coverage is measured only for test_fun.cpp file! (see yml)
 
-![C/C++ CI](https://github.com/your-username/your-repo/actions/workflows/c-cpp.yml/badge.svg)
-![Tests](https://img.shields.io/badge/Tests-8%20passed-brightgreen)
-![C++](https://img.shields.io/badge/C++-20-blue)
+Code coverage badge updates ~5 minutes (cache lifetime in shield.io)
 
-A C++ student database management system with sorting functionality and comprehensive GoogleTest coverage.
-
-## Features
-
-- Add students to database
-- Display all students  
-- Sort by name or GPA (ascending/descending)
-- Comprehensive unit testing
-- Continuous Integration with GitHub Actions
-
-## Build & Run
-
-```bash
-# Compile
-make
-
-# Run program
-./program.out
-
-# Run tests  
-./program.out --test
